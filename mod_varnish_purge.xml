@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension
     type="module"
-    version="3.1"
-    client="site"
+    version="3.5"
+    client="administrator"
     method="upgrade"
     >
-	<name>mod_banners4varnish</name>
+	<name>mod_varnish_purge</name>
 	<author>Emerson Rocha Luiz @ Alligo</author>
-	<creationDate>2015-12-25</creationDate>
-	<copyright>Copyright (C) 2005 - 2015 Alligo Ltda. All rights reserved.</copyright>
+	<creationDate>2016-03-27</creationDate>
+	<copyright>Copyright (C) 2005 - 2016 Alligo Ltda. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>emerson@alligo.com.br</authorEmail>
 	<authorUrl>http://www.fititnt.org</authorUrl>
 	<version>1.0.0</version>
-	<description>MOD_BANNERS4VARNISH_XML_DESCRIPTION</description>
+	<description>MOD_VARNISH_PURGE_XML_DESCRIPTION</description>
 	<files>
-		<filename module="mod_banners4varnish">mod_banners4varnish.php</filename>
+		<filename module="mod_varnish_purge">mod_varnish_purge.php</filename>
 		<folder>tmpl</folder>
 		<filename>helper.php</filename>
 	</files>
 	<languages folder="language">
-		<language tag="en-GB">en-GB/en-GB.mod_banners4varnish.ini</language>
-		<language tag="en-GB">en-GB/en-GB.mod_banners4varnish.sys.ini</language>
+		<language tag="en-GB">en-GB/en-GB.mod_varnish_purge.ini</language>
+		<language tag="en-GB">en-GB/en-GB.mod_varnish_purge.sys.ini</language>
 	</languages>
+    <!--
     <media destination="alligo" folder="media">
      <folder>js</folder>
     </media>
+    -->
 	<config>
 		<fields name="params">
 			<fieldset name="basic"
