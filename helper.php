@@ -28,7 +28,6 @@ class ModVarnishPurgeHelper
         $temp = $params->get('varnishlist');
         if ($temp) {
             $urls = array_filter(explode(PHP_EOL, $temp));
-            //$urls = explode(PHP_EOL, $temp);
             foreach ($urls AS $k => $url) {
                 if (strpos($url, 'http') === false) {
                     echo 'Malformated varnishlist';
@@ -40,10 +39,6 @@ class ModVarnishPurgeHelper
             echo 'error';
             die;
         }
-        //echo 'teste';
-        //print_r($module);
-        //print_r($hostname);
-        //print_r($urls);
 
         $cmd = $input->get('cmd');
         $data = $input->getString('data');
@@ -51,37 +46,50 @@ class ModVarnishPurgeHelper
         $method = $cmd === 'url' ? 'PURGE' : 'BAN';
         $hostname_clear = str_replace('https://', '', str_replace('http://', '', $hostname));
         foreach ($urls AS $url) {
-            //echo ''
-            echo 'purgeURL ' . $hostname . ', ' . $url . $urlquery . ', ' . $method . '<br>';
-            echo '<hr><br>';
-            echo '<pre>';
-            echo ModVarnishPurgeHelper::purgeURL($hostname_clear, $url . $urlquery, $method);
+            //echo 'purgeURL ' . $hostname . ', ' . $url . $urlquery . ', ' . $method . '<br>';
+            //echo '<hr><br>';
+            //echo '<pre>';
+            if ($method === 'BAN') {
+                if ($cmd === 'null') {
+                    $url = '/';
+                }
+                echo ModVarnishPurgeHelper::purgeURL($hostname_clear, $url, $method, $urlquery);
+            } else {
+                echo ModVarnishPurgeHelper::purgeURL($hostname_clear, $url . $urlquery);
+            }
+
             echo '</pre>';
-            //echo
         }
     }
 
-    public static function purgeURL($host, $url, $method = 'PURGE')
+    public static function purgeURL($host, $url, $method = 'PURGE', $xban = null)
     {
-        $ch = curl_init(); //Inicializar a sessao           
+        $headers = ['Host: ' . $host];
+        if ($xban) {
+            $headers[] = 'X-Ban: ' . $xban;
+        }
+
+        $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        //curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 1200);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_URL, $url); //Setar URL
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Host: ' . $host
-        ]);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        print_r($ch);
+        //print_r($ch);
 
-        $content = curl_exec($ch); //Execute
+        $content = curl_exec($ch);
 
         if (curl_errno($ch)) {
-            return 'Error!' . curl_error($ch);
+            return 'Error! ' . curl_error($ch);
         }
-        curl_close($ch); //Feche 
-        return $content;
+        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        //return $content;
+        return $http_status;
     }
 }
