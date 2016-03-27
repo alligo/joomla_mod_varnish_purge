@@ -17,22 +17,22 @@ defined('_JEXEC') or die;
 <form id="modvarnishpurge">
 	<input type="text" name="data">
     <br />
-	<input type="submit" id="modvarnishpurge_url " class="btn btn-primary" value="<?php echo JText::_('MOD_VARNISH_PURGE_SUBMIT_URL') ?>" />
-	<input type="submit" id="modvarnishpurge_regex" class="btn btn-primary" value="<?php echo JText::_('MOD_VARNISH_PURGE_SUBMIT_REGEX') ?>" />
-	<input type="submit" id="modvarnishpurge_full" class="btn" value="<?php echo JText::_('MOD_VARNISH_PURGE_SUBMIT_FULL') ?>" />
+	<input type="submit" id="modvarnishpurge_url" data-action="url" class="btn btn-primary" value="<?php echo JText::_('MOD_VARNISH_PURGE_SUBMIT_URL') ?>" />
+	<input type="submit" id="modvarnishpurge_regex" data-action="regex" class="btn btn-primary" value="<?php echo JText::_('MOD_VARNISH_PURGE_SUBMIT_REGEX') ?>" />
+	<input type="submit" id="modvarnishpurge_full" data-action="full" class="btn" value="<?php echo JText::_('MOD_VARNISH_PURGE_SUBMIT_FULL') ?>" />
 </form>
 <div class="status"></div>
 <script>
 (function ($) {
 	$(document).on('click', '#modvarnishpurge input[type=submit]', function () {
 		var value   = $('input[name=data]').val(),
-			action  = $(this).attr('class'),
+			action  = $(this).attr('data-action'),
 			request = {
 					'option' : 'com_ajax',
 					'module' : 'varnish_purge',
 					'cmd'    : action,
 					'data'   : value,
-					'format' : '{$format}'
+					'format' : 'raw'
 				};
 		$.ajax({
 			type   : 'POST',

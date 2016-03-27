@@ -20,47 +20,68 @@ class ModVarnishPurgeHelper
 
     public static function getAjax()
     {
-        // Get module parameters
-        jimport('joomla.application.module.helper');
         $input = JFactory::getApplication()->input;
-        $module = JModuleHelper::getModule('session');
+        $module = JModuleHelper::getModule('varnish_purge');
         $params = new JRegistry();
         $params->loadString($module->params);
-        $node = $params->get('node', 'data');
-        $session = JFactory::getSession();
-        $sessionData = $session->get($node);
-        if (is_null($sessionData)) {
-            $sessionData = array();
-            $session->set($node, $sessionData);
-        }
-        if ($input->get('cmd')) {
-            $cmd = $input->get('cmd');
-            $data = $input->get('data');
-            switch ($cmd) {
-                case "add" :
-                    if (!isset($sessionData[$data]) && $data != '') {
-                        $sessionData[$data] = $data;
-                        $session->set($node, $sessionData);
-                    }
-                    break;
-                case "delete" :
-                    if (isset($sessionData[$data])) {
-                        unset($sessionData[$data]);
-                        $session->set($node, $sessionData);
-                    }
-                    break;
-                case "destroy" :
-                    $sessionData = NULL;
-                    $session->set($node, $sessionData);
-                    break;
-                case "debug" :
-                    die('<pre>' . print_r($sessionData, TRUE) . '</pre>');
-                    break;
+        $hostname = $params->get('hostname');
+        $temp = $params->get('varnishlist');
+        if ($temp) {
+            $urls = array_filter(explode(PHP_EOL, $temp));
+            //$urls = explode(PHP_EOL, $temp);
+            foreach ($urls AS $k => $url) {
+                if (strpos($url, 'http') === false) {
+                    echo 'Malformated varnishlist';
+                    die;
+                }
+                $urls[$k] = preg_replace('/\s+/', '', $urls[$k]);
             }
-            if ($sessionData) {
-                return $sessionData;
-            }
-            return FALSE;
+        } else {
+            echo 'error';
+            die;
         }
+        //echo 'teste';
+        //print_r($module);
+        //print_r($hostname);
+        //print_r($urls);
+
+        $cmd = $input->get('cmd');
+        $data = $input->getString('data');
+        $urlquery = str_replace($hostname, '', $data);
+        $method = $cmd === 'url' ? 'PURGE' : 'BAN';
+        $hostname_clear = str_replace('https://', '', str_replace('http://', '', $hostname));
+        foreach ($urls AS $url) {
+            //echo ''
+            echo 'purgeURL ' . $hostname . ', ' . $url . $urlquery . ', ' . $method . '<br>';
+            echo '<hr><br>';
+            echo '<pre>';
+            echo ModVarnishPurgeHelper::purgeURL($hostname_clear, $url . $urlquery, $method);
+            echo '</pre>';
+            //echo
+        }
+    }
+
+    public static function purgeURL($host, $url, $method = 'PURGE')
+    {
+        $ch = curl_init(); //Inicializar a sessao           
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 1200);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_URL, $url); //Setar URL
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Host: ' . $host
+        ]);
+
+        print_r($ch);
+
+        $content = curl_exec($ch); //Execute
+
+        if (curl_errno($ch)) {
+            return 'Error!' . curl_error($ch);
+        }
+        curl_close($ch); //Feche 
+        return $content;
     }
 }
