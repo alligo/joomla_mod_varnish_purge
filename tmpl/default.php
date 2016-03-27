@@ -13,3 +13,11 @@ defined('_JEXEC') or die;
 
 ?>
 mod_varnish_purge
+
+<form>
+	<input type="text" name="data">
+	<input type="submit" class="add" value="<?php echo JText::_('MOD_SESSION_INPUT_ADD') ?>" />
+	<input type="submit" class="delete" value="<?php echo JText::_('MOD_SESSION_INPUT_DELETE') ?>" />
+	<input type="submit" class="destroy" value="<?php echo JText::_('MOD_SESSION_INPUT_DESTROY') ?>" />
+</form>
+<div class="status"></div>

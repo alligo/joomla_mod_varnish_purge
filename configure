@@ -11,16 +11,16 @@ if [ ! -d "/alligo/code/" ]; then
   exit
 fi
 
-REPOSITORIO=/alligo/code/alligo/mod_banners4varnish  # Onde está o repositorio?
-WEBPATH=/alligo/web/_/joomla34                             # Onde está o site de de testes
-EXTNAME=mod_banners4varnish
+REPOSITORIO=/alligo/code/alligo/joomla_mod_varnish_purge  # Onde está o repositorio?
+WEBPATH=/alligo/web/_/joomla-testing/joomla35rc-c/administrator                            # Onde está o site de de testes
+EXTNAME=mod_varnish_purge
 
 
 # Apaga repositorios e links
-if [[ -d $WEBPATH"/modules/mod_banners4varnish/" && ! -L $WEBPATH"/modules/mod_banners4varnish/" ]]; then
+if [[ -d $WEBPATH"/modules/"$EXTNAME"/" && ! -L $WEBPATH"/modules/"$EXTNAME"/" ]]; then
     echo "Link to $REPOSITORIO"
-    rm -rf $WEBPATH"/modules/mod_banners4varnish/"
-    ln -s $REPOSITORIO $WEBPATH"/modules/mod_banners4varnish" # Repare a falta de / ao final
+    rm -rf $WEBPATH"/modules/"$EXTNAME"/"
+    ln -s $REPOSITORIO $WEBPATH"/modules/"$EXTNAME # Repare a falta de / ao final
 fi
 
 if [ -f $WEBPATH"/language/en-GB/en-GB."$EXTNAME".ini" ]; then
