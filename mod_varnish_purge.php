@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 require_once __DIR__ . '/helper.php';
 
 // Instantiate global document object
+/*
 $doc = JFactory::getDocument();
 $loadJquery = $params->get('loadJquery', 1);
 $format = $params->get('format', 'debug');
@@ -60,5 +61,5 @@ $js = <<<JS
 })(jQuery)
 JS;
 $doc->addScriptDeclaration($js);
-
+*/
 require JModuleHelper::getLayoutPath('mod_varnish_purge', $params->get('layout', 'default'));
