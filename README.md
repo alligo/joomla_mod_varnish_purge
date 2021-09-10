@@ -1,4 +1,4 @@
-# Joomla CMS module extension joomla_mod_varnish_purge - 0.2-alpha
+# Joomla CMS module extension joomla_mod_varnish_purge - 1.0
 
 
 Other links to see

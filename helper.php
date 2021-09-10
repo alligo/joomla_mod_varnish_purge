@@ -46,9 +46,11 @@ class ModVarnishPurgeHelper
         $method = $cmd === 'url' ? 'PURGE' : 'BAN';
         $hostname_clear = str_replace('https://', '', str_replace('http://', '', $hostname));
         foreach ($urls AS $url) {
-            //echo 'purgeURL ' . $hostname . ', ' . $url . $urlquery . ', ' . $method . '<br>';
-            //echo '<hr><br>';
-            //echo '<pre>';
+            if (JDEBUG) {
+                echo 'purgeURL ' . $hostname . ', ' . $url . $urlquery . ', ' . $method . '<br>';
+                echo '<hr><br>';
+                echo '<pre>';
+            }
             if ($method === 'BAN') {
                 if ($cmd === 'null') {
                     $url = '/';
@@ -57,8 +59,9 @@ class ModVarnishPurgeHelper
             } else {
                 echo ModVarnishPurgeHelper::purgeURL($hostname_clear, $url . $urlquery);
             }
-
-            echo '</pre>';
+            if (JDEBUG) {
+                echo '</pre>';
+            }
         }
     }
 
